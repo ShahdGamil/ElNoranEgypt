@@ -74,6 +74,7 @@
 
 .cf-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 .cf-actions .btn { width: 100%; }
+.cf-actions.single { grid-template-columns: 1fr; }
 .btn-wa { --btn-bg: #1DA851; box-shadow: 0 10px 24px -10px rgba(29, 168, 81, 0.6); }
 .btn-wa::before { background: #128C3F; }
 .spin { animation: spin 0.9s linear infinite; }

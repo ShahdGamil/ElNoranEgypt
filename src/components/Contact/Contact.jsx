@@ -1,19 +1,18 @@
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { AlertCircle, CheckCircle2, ExternalLink, Loader2, Mail, MapPin, Phone, Send, X } from 'lucide-react';
+import { ExternalLink, Mail, MapPin, Phone, X } from 'lucide-react';
 import SectionHead from '../common/SectionHead.jsx';
 import Reveal from '../common/Reveal.jsx';
 import WhatsAppIcon from '../common/WhatsAppIcon.jsx';
-import { company, emailApiUrl, emailRecipients, emailsPendingConfirmation, whatsappContacts } from '../../config/site.js';
+import { company, emailRecipients, emailsPendingConfirmation, whatsappContacts } from '../../config/site.js';
 import { LIMITS, buildWhatsAppMessage, validateContact, whatsappLink } from '../../utils/contact.js';
 import './Contact.css';
 
-const empty = { name: '', email: '', message: '', website: '' };
+const empty = { name: '', email: '', message: '' };
 
 export default function Contact({ inquiry }) {
   const [form, setForm] = useState(empty);
   const [errors, setErrors] = useState({});
-  const [status, setStatus] = useState({ type: 'idle', msg: '' });
   const [chooser, setChooser] = useState(false);
   const nameRef = useRef(null);
 
@@ -30,7 +29,6 @@ export default function Contact({ inquiry }) {
     const { name, value } = e.target;
     setForm((f) => ({ ...f, [name]: value }));
     if (errors[name]) setErrors((er) => ({ ...er, [name]: undefined }));
-    if (status.type !== 'loading') setStatus({ type: 'idle', msg: '' });
   };
 
   const check = () => {
@@ -43,40 +41,12 @@ export default function Contact({ inquiry }) {
     return true;
   };
 
-  const onWhatsApp = () => { if (check()) { setChooser(true); setStatus({ type: 'idle', msg: '' }); } };
-
-  const onEmail = async (e) => {
+  const onSubmit = (e) => {
     e.preventDefault();
-    setChooser(false);
-    if (!check()) return;
-    if (!emailApiUrl) {
-      setStatus({ type: 'error', msg: 'Online email delivery is not configured yet. Please contact us on WhatsApp or email us directly using the addresses on this page.' });
-      return;
-    }
-    setStatus({ type: 'loading', msg: '' });
-    const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), 20000);
-    try {
-      const res = await fetch(emailApiUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: form.name.trim(), email: form.email.trim(), message: form.message.trim(), website: form.website }),
-        signal: ctrl.signal,
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok || !data.ok) throw new Error(data.error || `Request failed (${res.status})`);
-      setStatus({ type: 'success', msg: 'Thank you! Your inquiry has been sent to the EL NORAN team. We will get back to you as soon as possible.' });
-      setForm(empty);
-    } catch (err) {
-      const msg = err.name === 'AbortError' ? 'The request timed out.' : err.message;
-      setStatus({ type: 'error', msg: `Sorry, your message could not be sent (${msg}). Please try again, or contact us on WhatsApp.` });
-    } finally {
-      clearTimeout(timer);
-    }
+    if (check()) setChooser(true);
   };
 
   const waText = buildWhatsAppMessage(form);
-  const mailtoFallback = `mailto:${emailRecipients.map((r) => r.email).join(',')}?subject=${encodeURIComponent(`Website inquiry from ${form.name || 'a visitor'}`)}&body=${encodeURIComponent(waText)}`;
 
   return (
     <section id="contact" className="section contact" aria-labelledby="contact-title">
@@ -137,26 +107,16 @@ export default function Contact({ inquiry }) {
 
           {/* -------- Form -------- */}
           <Reveal from="right" className="contact-form-wrap">
-            <form className="contact-form" onSubmit={onEmail} noValidate>
+            <form className="contact-form" onSubmit={onSubmit} noValidate>
               <div className="cf-row">
                 <Field id="cf-name" label="Name" name="name" value={form.name} onChange={update} error={errors.name} inputRef={nameRef} autoComplete="name" maxLength={LIMITS.name} />
                 <Field id="cf-email" label="Email" name="email" type="email" value={form.email} onChange={update} error={errors.email} autoComplete="email" maxLength={LIMITS.email} />
               </div>
               <Field id="cf-message" label="Message" name="message" textarea value={form.message} onChange={update} error={errors.message} maxLength={LIMITS.message} />
 
-              {/* Honeypot: hidden from people, catches bots */}
-              <div className="hp" aria-hidden="true">
-                <label htmlFor="cf-website">Website</label>
-                <input id="cf-website" name="website" tabIndex={-1} autoComplete="off" value={form.website} onChange={update} />
-              </div>
-
-              <div className="cf-actions">
-                <button type="button" className="btn btn-wa" onClick={onWhatsApp} aria-expanded={chooser} aria-controls="wa-chooser">
+              <div className="cf-actions single">
+                <button type="submit" className="btn btn-wa" aria-expanded={chooser} aria-controls="wa-chooser">
                   <WhatsAppIcon size={19} /> Send via WhatsApp
-                </button>
-                <button type="submit" className="btn btn-sun" disabled={status.type === 'loading'}>
-                  {status.type === 'loading' ? <Loader2 size={19} className="spin" /> : <Send size={18} />}
-                  {status.type === 'loading' ? 'Sending…' : 'Send via Email'}
                 </button>
               </div>
 
@@ -183,27 +143,6 @@ export default function Contact({ inquiry }) {
                           </a>
                         ))}
                       </div>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
-              <AnimatePresence mode="wait">
-                {(status.type === 'success' || status.type === 'error') && (
-                  <motion.div
-                    key={status.type}
-                    className={`cf-status ${status.type}`}
-                    role={status.type === 'error' ? 'alert' : 'status'}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0 }}
-                  >
-                    {status.type === 'success' ? <CheckCircle2 size={20} /> : <AlertCircle size={20} />}
-                    <div>
-                      <p>{status.msg}</p>
-                      {status.type === 'error' && (
-                        <a href={mailtoFallback} className="cf-fallback">Open in your email app instead</a>
-                      )}
                     </div>
                   </motion.div>
                 )}
