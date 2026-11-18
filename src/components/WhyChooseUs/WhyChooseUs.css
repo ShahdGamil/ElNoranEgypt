@@ -1,0 +1,42 @@
+.why { background: var(--cream-2); overflow: hidden; }
+.why-dots { right: 6%; top: 80px; }
+
+.why-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+
+.why-card {
+  position: relative; isolation: isolate; overflow: hidden;
+  padding: 34px 30px 32px; border-radius: var(--radius-lg);
+  background: var(--white); border: 1px solid rgba(38, 53, 29, 0.07);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.5s var(--ease), box-shadow 0.5s var(--ease), color 0.4s;
+}
+.why-card::before {
+  content: ''; position: absolute; z-index: -1;
+  width: 140%; aspect-ratio: 1; left: -20%; top: 100%;
+  border-radius: 50%; background: var(--c);
+  transition: top 0.7s var(--ease);
+}
+.why-card:hover { transform: translateY(-8px); box-shadow: 0 30px 60px -24px color-mix(in srgb, var(--c) 80%, #000); color: var(--white); }
+.why-card:hover::before { top: -20%; }
+
+.why-num {
+  position: absolute; top: 18px; right: 24px;
+  font-family: var(--font-display); font-size: 3.4rem; font-weight: 700; line-height: 1;
+  color: transparent; -webkit-text-stroke: 1.5px color-mix(in srgb, var(--c) 45%, transparent);
+  transition: -webkit-text-stroke-color 0.4s;
+}
+.why-card:hover .why-num { -webkit-text-stroke-color: rgba(255, 255, 255, 0.5); }
+
+.why-icon {
+  display: grid; place-items: center; width: 64px; height: 64px; border-radius: 20px;
+  background: color-mix(in srgb, var(--c) 14%, white); color: var(--c);
+  transition: background 0.4s, color 0.4s, transform 0.6s var(--ease);
+}
+.why-card:hover .why-icon { background: rgba(255, 255, 255, 0.2); color: var(--white); transform: rotate(-10deg) scale(1.08); }
+.why-card h3 { margin-top: 24px; font-size: 1.4rem; transition: color 0.4s; }
+.why-card:hover h3 { color: var(--white); }
+.why-card p { margin-top: 10px; color: var(--ink-soft); font-size: 0.97rem; transition: color 0.4s; }
+.why-card:hover p { color: rgba(255, 255, 255, 0.9); }
+
+@media (max-width: 1000px) { .why-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 640px) { .why-grid { grid-template-columns: 1fr; } .why-card { padding: 28px 24px; } }

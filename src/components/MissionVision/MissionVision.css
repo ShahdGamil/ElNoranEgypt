@@ -1,0 +1,52 @@
+.mv { display: grid; grid-template-columns: 1fr 1fr; }
+
+.mv-panel {
+  position: relative; isolation: isolate; overflow: hidden;
+  min-height: 640px; display: flex; align-items: flex-end;
+  padding: clamp(60px, 8vw, 110px) clamp(24px, 6vw, 90px);
+  color: var(--white);
+}
+.mv-bg { position: absolute; inset: -10% 0; z-index: -2; }
+.mv-bg img { width: 100%; height: 100%; object-fit: cover; }
+.mv-vision::before {
+  content: ''; position: absolute; inset: 0; z-index: -1;
+  background: linear-gradient(180deg, rgba(28, 61, 0, 0.55) 0%, rgba(28, 61, 0, 0.92) 65%, var(--green-950) 100%);
+}
+.mv-mission::before {
+  content: ''; position: absolute; inset: 0; z-index: -1;
+  background: linear-gradient(180deg, rgba(232, 75, 69, 0.55) 0%, rgba(214, 70, 45, 0.9) 60%, #A8322A 100%);
+}
+
+.mv-content { position: relative; max-width: 560px; }
+.mv-label {
+  display: inline-flex; align-items: center; gap: 10px; padding: 8px 16px; border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14); border: 1px solid rgba(255, 255, 255, 0.28);
+  font-size: 0.78rem; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase;
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+}
+.mv-title {
+  margin-top: 22px; color: var(--white);
+  font-size: clamp(2.3rem, 4.4vw, 3.8rem); letter-spacing: -0.02em; font-variation-settings: 'opsz' 144;
+}
+.mv-title em { font-style: italic; font-weight: 500; }
+.mv-vision .mv-title em { color: var(--orange); }
+.mv-mission .mv-title em { color: #FFE08A; }
+.mv-text { margin-top: 22px; font-size: 1.08rem; line-height: 1.75; color: rgba(255, 255, 255, 0.9); }
+
+.mv-pillars { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
+.mv-pillars span {
+  padding: 8px 16px; border-radius: 999px; background: var(--white); color: #B23A2E;
+  font-weight: 700; font-size: 0.86rem;
+}
+
+.mv-ring {
+  position: absolute; border-radius: 50%; border: 2px solid rgba(255, 255, 255, 0.25); pointer-events: none;
+  animation: spin 50s linear infinite;
+}
+.mv-ring.r1 { width: 300px; height: 300px; top: -80px; right: -80px; border-style: dashed; }
+.mv-ring.r2 { width: 220px; height: 220px; top: 40px; right: 40px; border-style: dotted; border-width: 4px; }
+
+@media (max-width: 900px) {
+  .mv { grid-template-columns: 1fr; }
+  .mv-panel { min-height: 560px; }
+}

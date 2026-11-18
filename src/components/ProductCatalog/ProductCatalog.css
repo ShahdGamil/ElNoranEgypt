@@ -1,0 +1,105 @@
+.catalog {
+  background:
+    radial-gradient(circle at 0% 0%, rgba(245, 166, 35, 0.12), transparent 35%),
+    radial-gradient(circle at 100% 40%, rgba(165, 201, 0, 0.14), transparent 35%),
+    radial-gradient(circle at 10% 90%, rgba(47, 143, 191, 0.1), transparent 35%),
+    var(--cream);
+  overflow: hidden;
+}
+.catalog-deco {
+  position: absolute; top: 40px; left: -60px; width: 220px; height: 220px; border-radius: 50%;
+  border: 2px dashed rgba(120, 169, 0, 0.35); animation: spin 60s linear infinite;
+}
+
+/* ---------- Filters ---------- */
+.filters {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;
+  padding: 8px; margin: 0 auto 48px; width: fit-content; max-width: 100%;
+  background: var(--white); border-radius: 999px; box-shadow: var(--shadow);
+}
+.filter-btn {
+  position: relative; display: inline-flex; align-items: center; gap: 8px;
+  padding: 11px 18px; border: 0; border-radius: 999px; background: transparent;
+  color: var(--ink-soft); font-weight: 700; font-size: 0.92rem;
+  transition: color 0.3s;
+}
+.filter-btn > * { position: relative; z-index: 1; }
+.filter-btn:hover { color: var(--green-800); }
+.filter-btn.active { color: var(--white); }
+.filter-bg { position: absolute !important; inset: 0; z-index: 0 !important; border-radius: inherit; background: var(--green-800); }
+.filter-btn[data-cat='fruits'] .filter-bg { background: var(--grad-sun); }
+.filter-btn[data-cat='vegetables'] .filter-bg { background: var(--grad-leaf); }
+.filter-btn[data-cat='frozen'] .filter-bg { background: var(--grad-ice); }
+.filter-count {
+  min-width: 24px; padding: 1px 7px; border-radius: 999px; font-size: 0.72rem;
+  background: rgba(38, 53, 29, 0.08); text-align: center;
+}
+.filter-btn.active .filter-count { background: rgba(255, 255, 255, 0.25); }
+
+/* ---------- Groups & grid ---------- */
+.catalog-groups { display: flex; flex-direction: column; gap: 28px; }
+.product-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
+
+.cat-banner {
+  position: relative; isolation: isolate; overflow: hidden;
+  min-height: 340px; border-radius: var(--radius-lg);
+  display: flex; align-items: flex-end; color: var(--white);
+  box-shadow: var(--shadow);
+}
+.cat-banner img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; transition: transform 1.2s var(--ease); }
+.cat-banner:hover img { transform: scale(1.08); }
+.cat-banner::before { content: ''; position: absolute; inset: 0; z-index: -1; background: var(--cat-grad); opacity: 0.88; mix-blend-mode: multiply; }
+.cat-banner::after { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(0deg, rgba(0, 0, 0, 0.45), transparent 60%); }
+.cat-banner-body { padding: 26px; }
+.cat-banner-icon { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 14px; background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); margin-bottom: 16px; }
+.cat-banner h3 { color: var(--white); font-size: 1.7rem; }
+.cat-banner p { margin-top: 8px; font-size: 0.92rem; opacity: 0.92; }
+.cat-banner-count { display: inline-block; margin-top: 16px; padding: 5px 12px; border-radius: 999px; background: rgba(255, 255, 255, 0.22); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+
+/* ---------- CTA ---------- */
+.catalog-cta {
+  margin-top: clamp(50px, 7vw, 80px);
+  display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap;
+  padding: clamp(28px, 4vw, 44px) clamp(24px, 4vw, 50px);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(120deg, var(--green-900) 0%, var(--green-800) 60%, #4E8A00 100%);
+  color: var(--white); position: relative; overflow: hidden;
+}
+.catalog-cta::before {
+  content: ''; position: absolute; right: -80px; top: -80px; width: 260px; height: 260px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(245, 166, 35, 0.55), transparent 70%);
+}
+.catalog-cta-text { position: relative; }
+.catalog-cta h3 { color: var(--white); font-size: clamp(1.5rem, 3vw, 2.1rem); }
+.catalog-cta p { margin-top: 8px; color: rgba(255, 255, 255, 0.78); max-width: 560px; }
+.catalog-cta .btn { position: relative; }
+
+/* Banner tiles are sized so every group fills complete rows (7, 7 and 8 products). */
+.cat-frozen { grid-column: span 2; grid-row: span 2; }
+.cat-frozen .cat-banner-body { padding: 34px; }
+.cat-frozen h3 { font-size: 2.2rem; }
+
+@media (max-width: 1100px) {
+  .product-grid { grid-template-columns: repeat(3, 1fr); }
+  .cat-fruits, .cat-vegetables { grid-column: span 2; }
+}
+@media (max-width: 800px) {
+  .product-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .cat-fruits, .cat-vegetables { grid-column: auto; min-height: 0; }
+  .cat-fruits .cat-banner-body, .cat-vegetables .cat-banner-body { padding: 16px; }
+  .cat-fruits h3, .cat-vegetables h3 { font-size: 1.15rem; }
+  .cat-fruits p, .cat-vegetables p { display: none; }
+  .cat-fruits .cat-banner-icon, .cat-vegetables .cat-banner-icon { width: 40px; height: 40px; margin-bottom: 10px; }
+  .cat-frozen { grid-column: 1 / -1; grid-row: auto; min-height: 220px; }
+  .cat-frozen .cat-banner-body { padding: 24px; }
+  .cat-frozen h3 { font-size: 1.6rem; }
+  .filters { border-radius: 24px; }
+}
+@media (max-width: 560px) {
+  .filter-btn { padding: 10px 13px; font-size: 0.84rem; }
+  .catalog-cta .btn { width: 100%; }
+}
+@media (max-width: 380px) {
+  .product-grid { grid-template-columns: 1fr; }
+  .cat-fruits p, .cat-vegetables p { display: block; }
+}

@@ -1,0 +1,16 @@
+.loader {
+  position: fixed; inset: 0; z-index: 500;
+  display: grid; place-content: center; justify-items: center; gap: 18px;
+  background: radial-gradient(circle at 50% 40%, #FFFCEE 0%, var(--cream) 60%, #F3E7BD 100%);
+}
+.loader-logo { width: 92px; height: auto; filter: drop-shadow(0 14px 24px rgba(232, 75, 69, 0.35)); }
+.loader-word {
+  display: flex; font-family: var(--font-body); font-weight: 600;
+  font-size: 1.25rem; letter-spacing: 0.5em; color: var(--green-800); padding-left: 0.5em;
+}
+.loader-bar { width: 140px; height: 3px; border-radius: 3px; background: rgba(40, 89, 0, 0.12); overflow: hidden; }
+.loader-bar span {
+  display: block; height: 100%; width: 40%; border-radius: inherit; background: var(--grad-sun);
+  animation: loader-slide 1.1s var(--ease) infinite;
+}
+@keyframes loader-slide { from { transform: translateX(-100%); } to { transform: translateX(260%); } }

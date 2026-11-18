@@ -1,0 +1,30 @@
+{
+  "name": "elnoranegypt",
+  "private": true,
+  "version": "1.0.0",
+  "description": "EL NORAN for Trade & Export - corporate website",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "generate:map": "node scripts/generate-map.mjs",
+    "deploy": "npm run build && gh-pages -d dist --nojekyll"
+  },
+  "dependencies": {
+    "framer-motion": "^14.14.0",
+    "lucide-react": "^1.75.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^6.3.0",
+    "dotted-map": "^3.1.0",
+    "gh-pages": "^6.3.0",
+    "vite": "^8.3.8"
+  },
+  "homepage": "https://shahdgamil.github.io/ElNoranEgypt/",
+  "engines": {
+    "node": ">=20"
+  }
+}

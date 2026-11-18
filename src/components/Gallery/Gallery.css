@@ -1,0 +1,72 @@
+.gallery { background: var(--cream-2); }
+
+.gallery-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px 40px; flex-wrap: wrap; margin-bottom: 40px; }
+.gallery-head .section-head { margin-bottom: 0; }
+.gallery-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+.gallery-tags button {
+  padding: 9px 16px; border-radius: 999px; border: 1.5px solid rgba(40, 89, 0, 0.2);
+  background: transparent; color: var(--green-800); font-weight: 700; font-size: 0.86rem;
+  transition: background 0.3s, color 0.3s, border-color 0.3s, transform 0.3s var(--ease);
+}
+.gallery-tags button:hover { transform: translateY(-2px); border-color: var(--green-800); }
+.gallery-tags button.active { background: var(--green-800); color: var(--white); border-color: var(--green-800); }
+
+.masonry { columns: 4 240px; column-gap: 16px; }
+.masonry-item {
+  position: relative; display: block; width: 100%; margin: 0 0 16px; padding: 0; border: 0;
+  border-radius: 20px; overflow: hidden; break-inside: avoid; background: var(--sand);
+  box-shadow: var(--shadow-sm); cursor: zoom-in;
+}
+.masonry-item img { width: 100%; height: auto; transition: transform 0.9s var(--ease); }
+.masonry-item:hover img { transform: scale(1.08); }
+.masonry-overlay {
+  position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-start; gap: 6px;
+  padding: 16px; text-align: left; color: var(--white);
+  background: linear-gradient(0deg, rgba(20, 42, 0, 0.85) 0%, rgba(20, 42, 0, 0) 55%);
+  opacity: 0; transition: opacity 0.45s;
+}
+.masonry-item:hover .masonry-overlay, .masonry-item:focus-visible .masonry-overlay { opacity: 1; }
+.masonry-tag { padding: 3px 10px; border-radius: 999px; background: var(--orange); font-size: 0.68rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+.masonry-caption { font-weight: 700; font-size: 0.95rem; transform: translateY(10px); transition: transform 0.45s var(--ease); }
+.masonry-item:hover .masonry-caption { transform: none; }
+.masonry-icon { position: absolute; top: 14px; right: 14px; padding: 8px; width: 38px; height: 38px; border-radius: 50%; background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+
+.gallery-more { display: flex; justify-content: center; margin-top: 30px; }
+
+/* ---------- Lightbox ---------- */
+.lightbox {
+  position: fixed; inset: 0; z-index: 320;
+  display: grid; place-items: center; padding: 70px 80px;
+  background: rgba(12, 22, 4, 0.94);
+}
+.lb-figure { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 14px; max-width: 100%; max-height: 100%; }
+.lb-figure img {
+  max-width: min(1100px, 100%); max-height: calc(100vh - 180px); max-height: calc(100svh - 180px);
+  width: auto; height: auto; object-fit: contain; border-radius: 14px; box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+  cursor: grab; touch-action: pan-y; user-select: none; -webkit-user-drag: none;
+}
+.lb-figure figcaption { display: flex; align-items: center; gap: 14px; color: rgba(255, 255, 255, 0.9); font-weight: 600; text-align: center; }
+.lb-count { padding: 4px 10px; border-radius: 999px; background: rgba(255, 255, 255, 0.12); font-size: 0.8rem; font-variant-numeric: tabular-nums; }
+
+.lb-btn {
+  position: absolute; z-index: 2; display: grid; place-items: center;
+  width: 52px; height: 52px; border-radius: 50%; border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.08); color: var(--white);
+  transition: background 0.3s, transform 0.3s var(--ease);
+}
+.lb-btn:hover { background: var(--orange); transform: scale(1.08); }
+.lb-close { top: 18px; right: 18px; }
+.lb-prev { left: 18px; top: 50%; translate: 0 -50%; }
+.lb-next { right: 18px; top: 50%; translate: 0 -50%; }
+
+@media (max-width: 700px) {
+  .masonry { columns: 2 140px; column-gap: 10px; }
+  .masonry-item { margin-bottom: 10px; border-radius: 14px; }
+  .masonry-overlay { opacity: 1; background: linear-gradient(0deg, rgba(20, 42, 0, 0.75) 0%, transparent 45%); padding: 10px; }
+  .masonry-tag, .masonry-icon { display: none; }
+  .masonry-caption { font-size: 0.78rem; transform: none; }
+  .lightbox { padding: 70px 12px 90px; }
+  .lb-prev, .lb-next { top: auto; bottom: 20px; translate: none; }
+  .lb-prev { left: calc(50% - 64px); }
+  .lb-next { right: calc(50% - 64px); }
+}

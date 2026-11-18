@@ -1,0 +1,114 @@
+.contact {
+  background: linear-gradient(180deg, var(--cream-2) 0%, var(--cream) 100%);
+  overflow: hidden;
+}
+.contact-shape { position: absolute; border-radius: 50%; pointer-events: none; }
+.contact-shape.s1 { width: 420px; height: 420px; left: -180px; top: 120px; background: radial-gradient(circle, rgba(165, 201, 0, 0.3), transparent 70%); }
+.contact-shape.s2 { width: 480px; height: 480px; right: -200px; bottom: -120px; background: radial-gradient(circle, rgba(245, 166, 35, 0.28), transparent 70%); }
+
+.contact-grid { position: relative; display: grid; grid-template-columns: 0.85fr 1.15fr; gap: 28px; align-items: start; }
+
+/* ---------- Info cards ---------- */
+.contact-info { display: grid; gap: 14px; }
+.ci-card {
+  --c: var(--green-800);
+  display: flex; gap: 16px; align-items: flex-start;
+  padding: 22px; border-radius: var(--radius);
+  background: var(--white); border: 1px solid rgba(38, 53, 29, 0.07); box-shadow: var(--shadow-sm);
+  transition: transform 0.4s var(--ease), box-shadow 0.4s var(--ease);
+}
+.ci-card:hover { transform: translateX(6px); box-shadow: var(--shadow); }
+.ci-whatsapp { --c: #1DA851; }
+.ci-phone { --c: var(--orange-deep); }
+.ci-email { --c: var(--red); }
+.ci-address { --c: var(--green-700); }
+.ci-icon {
+  flex-shrink: 0; display: grid; place-items: center; width: 48px; height: 48px; border-radius: 14px;
+  background: color-mix(in srgb, var(--c) 12%, white); color: var(--c);
+}
+.ci-card > div { min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.ci-card h3 { font-family: var(--font-body); font-size: 0.75rem; font-weight: 800; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+.ci-card a { font-weight: 700; color: var(--ink); transition: color 0.3s; overflow-wrap: anywhere; }
+.ci-card a:hover { color: var(--c); }
+.ci-card a small { font-weight: 600; color: var(--muted); }
+.ci-email-link { font-size: 0.95rem; }
+.ci-address a { font-weight: 600; font-size: 0.95rem; line-height: 1.5; }
+.ci-address a svg { display: inline; vertical-align: -1px; }
+.ci-pending { font-size: 0.75rem; color: var(--orange-deep); font-weight: 600; }
+
+/* ---------- Form ---------- */
+.contact-form-wrap {
+  position: relative; padding: clamp(26px, 4vw, 44px); border-radius: var(--radius-lg);
+  background: var(--white); box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+.contact-form-wrap::before { content: ''; position: absolute; inset: 0 0 auto; height: 5px; background: linear-gradient(90deg, var(--lime), var(--orange), var(--red)); }
+.contact-form { display: flex; flex-direction: column; gap: 22px; }
+.cf-row { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+
+.field { position: relative; }
+.field input, .field textarea {
+  width: 100%; padding: 22px 16px 10px; border-radius: 14px;
+  border: 1.5px solid rgba(38, 53, 29, 0.14); background: var(--cream-2);
+  font: inherit; font-size: 1rem; color: var(--ink);
+  transition: border-color 0.3s, background 0.3s, box-shadow 0.3s;
+  resize: vertical;
+}
+.field textarea { min-height: 160px; }
+.field input:focus, .field textarea:focus { outline: none; border-color: var(--green-500); background: var(--white); box-shadow: 0 0 0 4px rgba(120, 169, 0, 0.15); }
+.field label {
+  position: absolute; left: 17px; top: 17px; pointer-events: none;
+  color: var(--muted); font-weight: 600; transition: transform 0.25s var(--ease), color 0.25s, font-size 0.25s;
+  transform-origin: left top;
+}
+.field label span { color: var(--red); }
+.field input:focus + label, .field textarea:focus + label,
+.field input:not(:placeholder-shown) + label, .field textarea:not(:placeholder-shown) + label {
+  transform: translateY(-10px) scale(0.78); color: var(--green-700);
+}
+.field.has-error input, .field.has-error textarea { border-color: var(--red); background: #FFF5F4; }
+.field.has-error label { color: var(--red); }
+.field-error { display: block; margin-top: 6px; font-size: 0.82rem; font-weight: 600; color: #C2332D; }
+
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+.cf-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.cf-actions .btn { width: 100%; }
+.btn-wa { --btn-bg: #1DA851; box-shadow: 0 10px 24px -10px rgba(29, 168, 81, 0.6); }
+.btn-wa::before { background: #128C3F; }
+.spin { animation: spin 0.9s linear infinite; }
+
+.wa-chooser { overflow: hidden; }
+.wa-inner { padding: 18px; border-radius: 18px; background: #EAF8EF; border: 1px solid rgba(29, 168, 81, 0.25); }
+.wa-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.wa-head strong { color: #116B33; }
+.wa-head button { border: 0; background: transparent; color: #116B33; padding: 4px; border-radius: 8px; }
+.wa-inner p { margin-top: 6px; font-size: 0.86rem; color: #2C5A3A; }
+.wa-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+.wa-option {
+  display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 14px;
+  background: var(--white); color: #116B33; font-weight: 700; font-size: 0.92rem;
+  border: 1.5px solid rgba(29, 168, 81, 0.3);
+  transition: background 0.3s, color 0.3s, transform 0.3s var(--ease);
+}
+.wa-option span { display: flex; flex-direction: column; line-height: 1.3; }
+.wa-option small { font-weight: 600; opacity: 0.75; }
+.wa-option:hover { background: #1DA851; color: var(--white); transform: translateY(-2px); }
+
+.cf-status { display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px; border-radius: 14px; font-size: 0.93rem; font-weight: 600; }
+.cf-status svg { flex-shrink: 0; margin-top: 1px; }
+.cf-status.success { background: #EAF6DA; color: #2D5A00; border: 1px solid rgba(120, 169, 0, 0.4); }
+.cf-status.error { background: #FFEDEB; color: #A32A24; border: 1px solid rgba(232, 75, 69, 0.35); }
+.cf-fallback { display: inline-block; margin-top: 6px; text-decoration: underline; font-weight: 700; }
+
+.cf-privacy { font-size: 0.8rem; color: var(--muted); }
+
+@media (max-width: 960px) {
+  .contact-grid { grid-template-columns: 1fr; }
+  .contact-info { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 640px) {
+  .contact-info { grid-template-columns: 1fr; }
+  .cf-row, .cf-actions, .wa-options { grid-template-columns: 1fr; }
+  .ci-card:hover { transform: none; }
+}

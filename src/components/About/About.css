@@ -1,0 +1,76 @@
+.about { background: var(--cream-2); overflow: hidden; }
+.about-dots-1 { top: 60px; right: 4%; }
+
+.about-grid { display: grid; grid-template-columns: 0.95fr 1.05fr; gap: clamp(40px, 7vw, 100px); align-items: center; }
+
+/* Visual collage */
+.about-visual { position: relative; min-height: 560px; }
+.av-main {
+  position: absolute; left: 0; top: 0; width: 76%; height: 78%;
+  border-radius: 200px 200px 32px 32px; overflow: hidden; box-shadow: var(--shadow-lg);
+}
+.av-main img, .av-secondary img { width: 100%; height: 100%; object-fit: cover; }
+.av-secondary {
+  position: absolute; right: 0; bottom: 0; width: 52%; aspect-ratio: 1;
+  border-radius: 50%; overflow: hidden; border: 8px solid var(--cream-2); box-shadow: var(--shadow);
+}
+.av-logo { position: absolute; right: 8%; top: 4%; width: 74px; filter: drop-shadow(0 12px 20px rgba(232, 75, 69, 0.35)); }
+.av-year {
+  position: absolute; left: 6%; bottom: 4%;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  width: 150px; height: 150px; border-radius: 50%;
+  background: var(--grad-sun); color: var(--white);
+  box-shadow: 0 20px 40px -14px rgba(232, 75, 69, 0.7);
+  text-align: center; line-height: 1.1;
+  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+}
+.av-year strong { font-family: var(--font-display); font-size: 2.6rem; letter-spacing: 0; margin: 2px 0; }
+
+/* Copy */
+.about-text { margin-top: 16px; color: var(--ink-soft); }
+.about-customers { margin-top: 32px; padding: 24px; border-radius: var(--radius); background: var(--white); box-shadow: var(--shadow-sm); border: 1px solid rgba(120, 169, 0, 0.18); }
+.about-customers h3 { font-family: var(--font-body); font-size: 0.78rem; letter-spacing: 0.24em; text-transform: uppercase; color: var(--green-700); margin-bottom: 14px; }
+.about-customers ul { display: flex; flex-wrap: wrap; gap: 10px; }
+.about-customers li {
+  display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px;
+  background: var(--cream); color: var(--green-900); font-weight: 600; font-size: 0.9rem;
+  transition: transform 0.3s var(--ease), background 0.3s, color 0.3s;
+}
+.about-customers li svg { color: var(--orange-deep); transition: color 0.3s; }
+.about-customers li:hover { transform: translateY(-3px); background: var(--green-800); color: var(--white); }
+.about-customers li:hover svg { color: var(--lime); }
+
+/* Timeline */
+.timeline {
+  list-style: none; padding: 0; margin: clamp(60px, 9vw, 110px) 0 0;
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; position: relative;
+}
+.timeline::before {
+  content: ''; position: absolute; left: 4%; right: 4%; top: 30px; height: 2px;
+  background: repeating-linear-gradient(90deg, var(--green-500) 0 10px, transparent 10px 18px);
+  opacity: 0.6;
+}
+.tl-item { position: relative; padding: 0 6px; }
+.tl-icon {
+  position: relative; z-index: 1; display: grid; place-items: center; width: 60px; height: 60px; border-radius: 50%;
+  background: var(--white); color: var(--green-800); border: 2px solid var(--green-500);
+  box-shadow: 0 0 0 8px var(--cream-2); transition: transform 0.4s var(--ease), background 0.4s, color 0.4s;
+}
+.tl-item:hover .tl-icon { transform: scale(1.1) rotate(-8deg); background: var(--grad-sun); color: var(--white); border-color: transparent; }
+.tl-step { display: block; margin-top: 18px; font-size: 0.75rem; font-weight: 800; letter-spacing: 0.2em; color: var(--orange-deep); }
+.tl-item h3 { margin-top: 6px; font-size: 1.3rem; }
+.tl-item p { margin-top: 8px; color: var(--ink-soft); font-size: 0.95rem; }
+
+@media (max-width: 960px) {
+  .about-grid { grid-template-columns: 1fr; }
+  .about-visual { min-height: 460px; max-width: 560px; width: 100%; margin-inline: auto; }
+  .timeline { grid-template-columns: repeat(2, 1fr); row-gap: 40px; }
+  .timeline::before { display: none; }
+}
+@media (max-width: 560px) {
+  .about-visual { min-height: 380px; }
+  .av-year { width: 116px; height: 116px; }
+  .av-year strong { font-size: 2rem; }
+  .av-logo { width: 56px; }
+  .timeline { grid-template-columns: 1fr; }
+}

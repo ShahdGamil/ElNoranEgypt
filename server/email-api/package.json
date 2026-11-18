@@ -1,0 +1,13 @@
+{
+  "name": "elnoran-email-api",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Serverless email endpoint for the EL NORAN website contact form (Vercel).",
+  "type": "module",
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "dev": "vercel dev",
+    "deploy": "vercel --prod",
+    "test": "node test/send-email.test.mjs"
+  }
+}

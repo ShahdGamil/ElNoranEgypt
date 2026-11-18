@@ -1,0 +1,248 @@
+import { useEffect, useRef, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { AlertCircle, CheckCircle2, ExternalLink, Loader2, Mail, MapPin, Phone, Send, X } from 'lucide-react';
+import SectionHead from '../common/SectionHead.jsx';
+import Reveal from '../common/Reveal.jsx';
+import WhatsAppIcon from '../common/WhatsAppIcon.jsx';
+import { company, emailApiUrl, emailRecipients, emailsPendingConfirmation, whatsappContacts } from '../../config/site.js';
+import { LIMITS, buildWhatsAppMessage, validateContact, whatsappLink } from '../../utils/contact.js';
+import './Contact.css';
+
+const empty = { name: '', email: '', message: '', website: '' };
+
+export default function Contact({ inquiry }) {
+  const [form, setForm] = useState(empty);
+  const [errors, setErrors] = useState({});
+  const [status, setStatus] = useState({ type: 'idle', msg: '' });
+  const [chooser, setChooser] = useState(false);
+  const nameRef = useRef(null);
+
+  // Pre-fill from "Request information" in the product modal
+  useEffect(() => {
+    if (!inquiry) return;
+    setForm((f) => ({ ...f, message: inquiry }));
+    setErrors((e) => ({ ...e, message: undefined }));
+    const t = setTimeout(() => nameRef.current?.focus({ preventScroll: true }), 700);
+    return () => clearTimeout(t);
+  }, [inquiry]);
+
+  const update = (e) => {
+    const { name, value } = e.target;
+    setForm((f) => ({ ...f, [name]: value }));
+    if (errors[name]) setErrors((er) => ({ ...er, [name]: undefined }));
+    if (status.type !== 'loading') setStatus({ type: 'idle', msg: '' });
+  };
+
+  const check = () => {
+    const errs = validateContact(form);
+    setErrors(errs);
+    if (Object.keys(errs).length) {
+      document.getElementById(`cf-${Object.keys(errs)[0]}`)?.focus();
+      return false;
+    }
+    return true;
+  };
+
+  const onWhatsApp = () => { if (check()) { setChooser(true); setStatus({ type: 'idle', msg: '' }); } };
+
+  const onEmail = async (e) => {
+    e.preventDefault();
+    setChooser(false);
+    if (!check()) return;
+    if (!emailApiUrl) {
+      setStatus({ type: 'error', msg: 'Online email delivery is not configured yet. Please contact us on WhatsApp or email us directly using the addresses on this page.' });
+      return;
+    }
+    setStatus({ type: 'loading', msg: '' });
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 20000);
+    try {
+      const res = await fetch(emailApiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: form.name.trim(), email: form.email.trim(), message: form.message.trim(), website: form.website }),
+        signal: ctrl.signal,
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.ok) throw new Error(data.error || `Request failed (${res.status})`);
+      setStatus({ type: 'success', msg: 'Thank you! Your inquiry has been sent to the EL NORAN team. We will get back to you as soon as possible.' });
+      setForm(empty);
+    } catch (err) {
+      const msg = err.name === 'AbortError' ? 'The request timed out.' : err.message;
+      setStatus({ type: 'error', msg: `Sorry, your message could not be sent (${msg}). Please try again, or contact us on WhatsApp.` });
+    } finally {
+      clearTimeout(timer);
+    }
+  };
+
+  const waText = buildWhatsAppMessage(form);
+  const mailtoFallback = `mailto:${emailRecipients.map((r) => r.email).join(',')}?subject=${encodeURIComponent(`Website inquiry from ${form.name || 'a visitor'}`)}&body=${encodeURIComponent(waText)}`;
+
+  return (
+    <section id="contact" className="section contact" aria-labelledby="contact-title">
+      <div className="contact-shape s1" aria-hidden="true" />
+      <div className="contact-shape s2" aria-hidden="true" />
+      <div className="container">
+        <SectionHead
+          center
+          id="contact-title"
+          eyebrow="Get in Touch"
+          title={<>Let&rsquo;s grow <em>together</em>.</>}
+          lead="Tell us about your requirements — our team will be glad to help with product information and export inquiries."
+        />
+
+        <div className="contact-grid">
+          {/* -------- Contact details -------- */}
+          <Reveal from="left" className="contact-info">
+            <div className="ci-card ci-whatsapp">
+              <span className="ci-icon"><WhatsAppIcon size={22} /></span>
+              <div>
+                <h3>WhatsApp</h3>
+                {whatsappContacts.map((c) => (
+                  <a key={c.id} href={whatsappLink(c.number)} target="_blank" rel="noopener noreferrer">
+                    {c.display} <small>&middot; {c.name}</small>
+                  </a>
+                ))}
+              </div>
+            </div>
+            <div className="ci-card ci-phone">
+              <span className="ci-icon"><Phone size={20} /></span>
+              <div>
+                <h3>Phone</h3>
+                {whatsappContacts.map((c) => (
+                  <a key={c.id} href={`tel:+${c.number}`}>{c.display}</a>
+                ))}
+              </div>
+            </div>
+            <div className="ci-card ci-email">
+              <span className="ci-icon"><Mail size={20} /></span>
+              <div>
+                <h3>Email</h3>
+                {emailRecipients.map((r) => (
+                  <a key={r.email} href={`mailto:${r.email}`} className="ci-email-link">{r.email}</a>
+                ))}
+                {emailsPendingConfirmation && <small className="ci-pending">Email domain pending confirmation</small>}
+              </div>
+            </div>
+            <div className="ci-card ci-address">
+              <span className="ci-icon"><MapPin size={20} /></span>
+              <div>
+                <h3>Address</h3>
+                <a href={company.mapsUrl} target="_blank" rel="noopener noreferrer">
+                  {company.address} <ExternalLink size={13} />
+                </a>
+              </div>
+            </div>
+          </Reveal>
+
+          {/* -------- Form -------- */}
+          <Reveal from="right" className="contact-form-wrap">
+            <form className="contact-form" onSubmit={onEmail} noValidate>
+              <div className="cf-row">
+                <Field id="cf-name" label="Name" name="name" value={form.name} onChange={update} error={errors.name} inputRef={nameRef} autoComplete="name" maxLength={LIMITS.name} />
+                <Field id="cf-email" label="Email" name="email" type="email" value={form.email} onChange={update} error={errors.email} autoComplete="email" maxLength={LIMITS.email} />
+              </div>
+              <Field id="cf-message" label="Message" name="message" textarea value={form.message} onChange={update} error={errors.message} maxLength={LIMITS.message} />
+
+              {/* Honeypot: hidden from people, catches bots */}
+              <div className="hp" aria-hidden="true">
+                <label htmlFor="cf-website">Website</label>
+                <input id="cf-website" name="website" tabIndex={-1} autoComplete="off" value={form.website} onChange={update} />
+              </div>
+
+              <div className="cf-actions">
+                <button type="button" className="btn btn-wa" onClick={onWhatsApp} aria-expanded={chooser} aria-controls="wa-chooser">
+                  <WhatsAppIcon size={19} /> Send via WhatsApp
+                </button>
+                <button type="submit" className="btn btn-sun" disabled={status.type === 'loading'}>
+                  {status.type === 'loading' ? <Loader2 size={19} className="spin" /> : <Send size={18} />}
+                  {status.type === 'loading' ? 'Sending…' : 'Send via Email'}
+                </button>
+              </div>
+
+              <AnimatePresence>
+                {chooser && (
+                  <motion.div
+                    id="wa-chooser"
+                    className="wa-chooser"
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                  >
+                    <div className="wa-inner">
+                      <div className="wa-head">
+                        <strong>Choose who to message on WhatsApp</strong>
+                        <button type="button" onClick={() => setChooser(false)} aria-label="Close WhatsApp options"><X size={18} /></button>
+                      </div>
+                      <p>WhatsApp opens a chat with one representative at a time, with your message already filled in. Press send in WhatsApp to deliver it.</p>
+                      <div className="wa-options">
+                        {whatsappContacts.map((c) => (
+                          <a key={c.id} className="wa-option" href={whatsappLink(c.number, waText)} target="_blank" rel="noopener noreferrer">
+                            <WhatsAppIcon size={20} />
+                            <span>Contact {c.name} via WhatsApp<small>{c.display}</small></span>
+                          </a>
+                        ))}
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              <AnimatePresence mode="wait">
+                {(status.type === 'success' || status.type === 'error') && (
+                  <motion.div
+                    key={status.type}
+                    className={`cf-status ${status.type}`}
+                    role={status.type === 'error' ? 'alert' : 'status'}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                  >
+                    {status.type === 'success' ? <CheckCircle2 size={20} /> : <AlertCircle size={20} />}
+                    <div>
+                      <p>{status.msg}</p>
+                      {status.type === 'error' && (
+                        <a href={mailtoFallback} className="cf-fallback">Open in your email app instead</a>
+                      )}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              <p className="cf-privacy">Fields marked * are required. Your details are used only to respond to your inquiry.</p>
+            </form>
+          </Reveal>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Field({ id, label, textarea, error, inputRef, ...props }) {
+  const Tag = textarea ? 'textarea' : 'input';
+  return (
+    <div className={`field${error ? ' has-error' : ''}${props.value ? ' filled' : ''}`}>
+      <Tag
+        id={id}
+        ref={inputRef}
+        placeholder=" "
+        required
+        aria-required="true"
+        aria-invalid={Boolean(error)}
+        aria-describedby={error ? `${id}-err` : undefined}
+        rows={textarea ? 6 : undefined}
+        type={textarea ? undefined : props.type || 'text'}
+        {...props}
+      />
+      <label htmlFor={id}>{label} <span aria-hidden="true">*</span></label>
+      <span className="field-line" aria-hidden="true" />
+      <AnimatePresence>
+        {error && (
+          <motion.span id={`${id}-err`} className="field-error" initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+            {error}
+          </motion.span>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
